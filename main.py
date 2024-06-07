@@ -17,7 +17,7 @@ LOGS_FILE = 'bot.log' # file to stor logs
 ALLOWED_USER_ID =int(os.getenv("ALLOWED_USER_ID")) # get id and convert it to int 
 AUTHORIZED_GUILD_IDS = [
     1111111111111111111,
-    1234567891234564875
+    1243214590124001100
     ] # remplace with authorized guilds ids 
 
 # Configuration for server-specific collections
@@ -234,15 +234,15 @@ async def help(interaction: discord.Interaction):
     embed.add_field(
         name="Bot Usage",
         value="""Here is how you can use the bot's features:\n
-    1. **Set the Verification Embed Channel**: Use the `/set_embed_channel` command (administrators only) to specify the channel where users can submit their wallets.
-    2. **Submit Wallet**: Users can submit their wallet addresses through the provided interface to get verified.
-    3. **Get Roles**: Once verified, users will be assigned roles based on their NFT holdings.
-    4. **Enjoy the Bot**: Access exclusive channels and content based on your roles.""",
+     1 . **Set the Verification Embed Channel**: Use the `/set_embed_channel` command (administrators only) to specify the channel where users can submit their wallets.
+     2 . **Submit Wallet**: Users can submit their wallet addresses through the provided interface to get verified.
+     3 . **Get Roles**: Once verified, users will be assigned roles based on their NFT holdings.
+     4 . **Enjoy the Bot**: Access exclusive channels and content based on your roles.""",
         inline=False
     )
     embed.add_field(
         name="Future Updates",
-        value="We plan to add more features such as a website for connecting wallets, viewing portfolios, and more, based on user support and feedback. Stay tuned! [Github](https://github.com/BrahimChatri/venom-holders-verify)",
+        value="We plan to add more features such as a website for connecting wallets, viewing portfolios, and more, based on user support and feedback. Stay tuned! __[Github](https://github.com/BrahimChatri/venom-holders-verify)__",
         inline=False
     )
     embed.set_thumbnail(url=interaction.guild.icon.url)
