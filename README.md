@@ -56,6 +56,11 @@ Invite the bot to your Discord server using the generated OAuth2 URL and grant n
 
 Feel free to use this bot as you like! If you find it useful or have suggestions for improvement, don't __hesitate to star the repository and follow Me on GitHub__.
 
+
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/BrahimChatri/venom-holders-verify&title=Views)](https://hits.seeyoufarm.com)
+
 ## 📜 License:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
