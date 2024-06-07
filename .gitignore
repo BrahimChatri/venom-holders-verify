@@ -1,2 +1,4 @@
 .env
 venv
+bot.log
+user_data.json
