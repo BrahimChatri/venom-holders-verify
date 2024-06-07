@@ -12,7 +12,7 @@ https://github.com/BrahimChatri/venom-holders-verify.git
 
 2. **Create Environment Variables**:
 
-Rename `.env.dev`To `.env` and Remplace Valeu of  following variables :
+Rename `.env.dev`To `.env` and Remplace values of  following variables :
 
 ```sh
 TOKEN = Your Discord bot token 
