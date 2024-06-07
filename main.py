@@ -105,7 +105,8 @@ class PersistentWalletView(discord.ui.View):
         self.add_item(button)
 
     async def button_callback(self, interaction: discord.Interaction):
-        if interaction.guild_id not in AUTHORIZED_GUILD_IDS: # If the server is not in the authorized list  you can remove this part if you want
+        if interaction.guild_id not in AUTHORIZED_GUILD_IDS: # If the server ID is not in the authorized list  you can't submet 
+                                                             # (remove this part if you want)
             embed = discord.Embed(
                 title="Authorization Error ❌",
                 description="It seems like your server hasn't been added to the bot yet.",
@@ -212,35 +213,37 @@ async def on_ready():
 async def help(interaction: discord.Interaction):
     guild= interaction.guild
     icon_url = interaction.guild.icon.url if guild.icon else None
-    embed = discord.Embed(   
-        title="Help",
-        description="**Here is some help for bot utilization.**\n\n\n",
-        color=discord.Color.brand_green()
+    embed = discord.Embed(
+    title="Help",
+    description="**Here is some help for bot utilization.**\n\n\n",
+    color=discord.Color.brand_green()
     )
     embed.add_field(
-        name="Action Required",
-        value="To start using the bot's features, please fill out this [Authorization Form](https://example.com). The owner will add your server upon submission.",
+        name="Getting Started",
+        value="To start using the bot's features, make sure the bot has been properly set up and authorized in your server.",
         inline=False
     )
     embed.add_field(
         name="About Bot",
         value="""
-**VenomShield:** The NFT guardian you need. 
-Developed by [__Brahim CH__](https://github.com/BrahimChatri), it verifies holders on the Venom Network.
-""",
+    **VenomShield:** The NFT guardian you need. 
+    This bot verifies holders on the Venom Network and manages roles based on users' NFT holdings.
+    """,
         inline=False
     )
     embed.add_field(
         name="Bot Usage",
-        value="""After filling out the form, you will be authorized to use the bot's features:\n
- Set the verification embed channel using `/set_embed_channel` command (administrators only).\n
- Users can then submit their wallets and get roles based on the information entered in the form.\n
- Enjoy the bot!""",
+        value="""Here is how you can use the bot's features:\n
+    1. **Set the Verification Embed Channel**: Use the `/set_embed_channel` command (administrators only) to specify the channel where users can submit their wallets.
+    2. **Submit Wallet**: Users can submit their wallet addresses through the provided interface to get verified.
+    3. **Get Roles**: Once verified, users will be assigned roles based on their NFT holdings.
+    4. **Enjoy the Bot**: Access exclusive channels and content based on your roles.""",
         inline=False
-    )   # Change this data as you like 
+    )
     embed.add_field(
-        name="Futur Updates",
-        value="If we see users are using our tool and find support, we will update it to support a website for connecting wallets, viewing your portfolio, and more features coming soon\n"
+        name="Future Updates",
+        value="We plan to add more features such as a website for connecting wallets, viewing portfolios, and more, based on user support and feedback. Stay tuned! [Github](https://github.com/BrahimChatri/venom-holders-verify)",
+        inline=False
     )
     embed.set_thumbnail(url=interaction.guild.icon.url)
     embed.set_footer(text=f"© 2024 - {interaction.guild.name}", icon_url=icon_url)
