@@ -57,6 +57,12 @@ class WalletModal(discord.ui.Modal, title='Submit Your Wallet Address'):
     wallet_address = discord.ui.TextInput(label='Wallet Address', placeholder='Eg:0:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
     async def on_submit(self, interaction: discord.Interaction):
+        """
+        Handles the submission of a wallet address by a user.
+
+        Args:
+            interaction (discord.Interaction): The interaction object containing user and guild information.
+        """
         user_id = str(interaction.user.id)
         server_id = str(interaction.guild.id)
         
@@ -96,17 +102,32 @@ class WalletModal(discord.ui.Modal, title='Submit Your Wallet Address'):
             save_user_data(user_data) # Save user data to a file to access it in the task loop 
         else:
             await interaction.response.send_message("Failed to retrieve user data. Try again later!", ephemeral=True)
-# This to let the botton work all the time and dont raise timeout 
+
 class PersistentWalletView(discord.ui.View):
     def __init__(self):
+        """
+        Initializes the class instance, setting up a Discord UI button with a callback.
+
+        The button is labeled "Submit Wallet" and styled as a success button.
+        The button's callback is set to the `button_callback` method.
+        """
         super().__init__(timeout=None)
-        button = discord.ui.Button(label="Submit Wallet ", style=discord.ButtonStyle.success, custom_id="submit_wallet_button")
+        button = discord.ui.Button(label="Submit Wallet", style=discord.ButtonStyle.success, custom_id="submit_wallet_button")
         button.callback = self.button_callback
         self.add_item(button)
-
     async def button_callback(self, interaction: discord.Interaction):
-        if interaction.guild_id not in AUTHORIZED_GUILD_IDS: # If the server ID is not in the authorized list  you can't submet 
-                                                             # (remove this part if you want)
+        """
+        Handles the button interaction callback.
+
+        This method checks if the interaction is from an authorized guild. If not, it sends an
+        authorization error message with instructions on how to get the server authorized. If the
+        guild is authorized, it sends a modal for further interaction.
+
+        Args:
+            interaction (discord.Interaction): The interaction object representing the button click.
+        """
+        if interaction.guild_id not in AUTHORIZED_GUILD_IDS:
+            # If the server ID is not in the authorized list, send an authorization error message
             embed = discord.Embed(
                 title="Authorization Error ❌",
                 description="It seems like your server hasn't been added to the bot yet.",
@@ -127,15 +148,29 @@ class PersistentWalletView(discord.ui.View):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-                
-            
-        
-        await interaction.response.send_modal(WalletModal()) # Send the moddal to be filled if the server is in the list 
-   
+
+        # Send the modal to be filled if the server is in the authorized list
+        await interaction.response.send_modal(WalletModal())
+
 # Function to fetch user's NFT data using venomart marcketplace api 
 def get_user_data(user_wallet, collection_contract_addresses):
+    """
+    Fetches NFT data for a given user wallet and filters it based on specified collection contract addresses.
+
+    Args:
+        user_wallet (str): The wallet address of the user.
+        collection_contract_addresses (list): A list of NFT collection contract addresses to filter the data.
+
+    Returns:
+        dict: A dictionary where keys are collection names and values are the count of NFTs in those collections.
+              Returns None if the API request fails.
+
+    Raises:
+        None
+    """
     API_URL = f"https://venomart.io/api/nft/get_owner_nfts?filterCollection=&owner_address={user_wallet}&saleType=All&sortby=recentlyListed&minprice=0&maxprice=0&skip=0"
     response = requests.get(API_URL)
+    
     # Check if the response is 200 
     if response.status_code == 200:
         data = response.json()
@@ -171,6 +206,22 @@ def load_user_data():
 # Background task to verify NFTs periodically
 @tasks.loop(minutes=30)
 async def verify_nfts():
+    """
+    Verifies NFTs for users across different servers.
+
+    This function loads user data, iterates through each user and their associated servers,
+    retrieves NFT data for the user's wallet, and processes the NFT data if available.
+
+    Steps:
+    1. Load user data.
+    2. Iterate through each user and their servers.
+    3. Retrieve NFT data for the user's wallet.
+    4. If NFT data is found, get the guild and member information.
+    5. Process the NFT data for the member in the guild.
+
+    Returns:
+        None
+    """
     user_data = load_user_data()
     for user_id, user_info in user_data.items():
         for server_id, server_info in user_info.items():
@@ -184,8 +235,18 @@ async def verify_nfts():
                     if member:
                         await process_nft_data(guild, member, nft_data)
 
-# Process NFT data and manage roles
 async def process_nft_data(guild, member, nft_data):
+    """
+    Processes NFT data for a given guild and member, assigning or removing roles based on the NFT collection count.
+
+    Args:
+        guild (discord.Guild): The guild (server) where the roles are managed.
+        member (discord.Member): The member whose roles are to be updated.
+        nft_data (dict): A dictionary containing NFT collection names as keys and their respective counts as values.
+
+    Returns:
+        None
+    """
     for collection, count in nft_data.items():
         if collection in collection_config and collection_config[collection]["server_id"] == guild.id:
             roles = collection_config[collection]["roles"]
@@ -196,6 +257,8 @@ async def process_nft_data(guild, member, nft_data):
                         await member.add_roles(role)
                     elif threshold.endswith('+') and count < int(threshold[:-1]):
                         await member.remove_roles(role)
+                        await member.remove_roles(role)
+
 
 # Event when the bot is ready
 @bot.event
@@ -272,6 +335,19 @@ async def set_embed_channel(interaction: discord.Interaction, channel: discord.T
 
 # Function to send verification embed
 async def send_verification_embed(channel, interaction: discord.Interaction):
+    """
+    Sends a verification embed message to a specified Discord channel.
+
+    This function constructs and sends an embed message to the provided channel,
+    prompting users to verify their NFT holdings by submitting their wallet address.
+
+    Args:
+        channel (discord.TextChannel): The channel where the embed message will be sent.
+        interaction (discord.Interaction): The interaction object containing context about the command invocation.
+
+    Returns:
+        None
+    """
     current_date_utc = datetime.now(timezone.utc).strftime("%d/%m/%Y")
     guild = interaction.guild
     guild_name = guild.name
@@ -293,8 +369,7 @@ async def send_verification_embed(channel, interaction: discord.Interaction):
     embed.add_field(name="Requirements : ", value="Ensure your wallet contains the required NFTs.\n Othewise you will get `Failed to retrieve user data. Try again later!`", inline=False)
     embed.set_footer(text=f"© 2024 {guild_name} - {current_date_utc} ", icon_url=guild_icon_url)
 
-    await channel.send(embed=embed, view=PersistentWalletView()) 
-
+    await channel.send(embed=embed, view=PersistentWalletView())
 # This command to access the data from server from allowed user !!
 @bot.tree.command(name="dev_things", description="This command is restricted to the Owner !!")  
 async def show_data(interaction: discord.Interaction):
