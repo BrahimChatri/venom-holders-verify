@@ -46,10 +46,9 @@ Invite the bot to your Discord server using the generated OAuth2 URL and grant n
 
 ## 📖 How to Use:
 
-1. **Fill Authorization Form**: Fill out the authorization form to get access to the bot's features.
-2. **Set Verification Channel**: Administrators can set the verification channel using the `/set_embed_channel` command.
-3. **Submit Wallet**: Users can submit their wallet addresses through the provided interface.
-4. **Get Verified**: After verification, users will gain access to exclusive channels and content based on their NFT holdings.
+1. **Set Verification Channel**: Administrators can set the verification channel using the `/set_embed_channel` command.
+2. **Submit Wallet**: Users can submit their wallet addresses through the provided interface.
+3. **Get Verified**: After verification, users will gain access to exclusive channels and content based on their NFT holdings.
 - __You can customize embed info by default set to be server icon as thumbnail and image are set to verify gif visit [assets](./assets/) To see some pics of the bot__ 
 
 ## 🌟 Contribution and Feedback:
